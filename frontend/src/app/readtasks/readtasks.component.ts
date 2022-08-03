@@ -11,9 +11,9 @@ import { TaskState } from '../reducers/task.reducer';
   styleUrls: ['./readtasks.component.scss'],
 })
 export class ReadtasksComponent implements OnInit {
-  tasks: Observable<Task[]>;
+  tasks$: Observable<Task[]>;
   constructor(private store: Store<{ tasks: TaskState }>) {
-    this.tasks = this.store.select('tasks', 'taskList');
+    this.tasks$ = this.store.select('tasks', 'taskList');
   }
 
   deleteTask(index: number) {

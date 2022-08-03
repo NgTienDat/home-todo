@@ -1,5 +1,4 @@
 // import { createSelector } from '@ngrx/store';
-// import { Task } from './models/task.model';
 // import { TaskState } from './reducers/task.reducer';
 
 // export interface AppState {
@@ -7,3 +6,7 @@
 // }
 
 // export const selectTask = (state: AppState) => state.tasks;
+
+// export const TaskCounter = createSelector(selectTask, (state: TaskState) => {
+//   state.taskList.length;
+// });
