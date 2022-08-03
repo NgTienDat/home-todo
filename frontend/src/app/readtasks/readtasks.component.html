@@ -1,5 +1,4 @@
-<div class="right" *ngIf="tasks$">
-
+<div>
     <h3>Tutorials</h3>
     <ul>
       <li  *ngFor="let task of tasks$ | async; let i = index">
@@ -9,5 +8,6 @@
         <button (click)="deleteTask(i)">Delete Task</button>
       </li>
     </ul>
-  
-  </div>
+    
+    <p>tasks left: {{ counter$ | async}}</p>
+</div>

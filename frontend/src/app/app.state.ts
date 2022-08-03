@@ -1,12 +1,21 @@
-// import { createSelector } from '@ngrx/store';
-// import { TaskState } from './reducers/task.reducer';
+import { ActionReducerMap, createSelector } from '@ngrx/store';
+import * as fromTask from './reducers/task.reducer';
+import { createSelector } from '@ngrx/store';
+import { TaskState } from './reducers/task.reducer';
 
-// export interface AppState {
-//   tasks: TaskState;
-// }
+export interface AppState {
+  tasks: fromTask.TaskState;
+}
 
-// export const selectTask = (state: AppState) => state.tasks;
+export const reducers: ActionReducerMap<AppState> = {
+  tasks: fromTask.taskReducer,
+};
 
-// export const TaskCounter = createSelector(selectTask, (state: TaskState) => {
-//   state.taskList.length;
-// });
+export const selectAllTasks = (state: AppState) => {
+  return state.tasks?.taskList || [];
+};
+export const taskCounter = createSelector(selectAllTasks, (taskList) => {
+  return taskList.filter((task) => !task.isDone).length;
+});
+
+

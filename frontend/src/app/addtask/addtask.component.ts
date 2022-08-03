@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as TaskAction from '../actions/task.action';
-import { Task } from '../models/task.model';
-import { TaskState } from '../reducers/task.reducer';
 
 @Component({
   selector: 'app-addtask',
@@ -10,7 +8,7 @@ import { TaskState } from '../reducers/task.reducer';
   styleUrls: ['./addtask.component.scss'],
 })
 export class AddtaskComponent implements OnInit {
-  constructor(private store: Store<{ tasks: TaskState }>) {}
+  constructor(private store: Store) {}
 
   addTask(name: string) {
     this.store.dispatch(TaskAction.addTask({ name: name }));

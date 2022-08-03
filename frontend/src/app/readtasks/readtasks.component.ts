@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { Task } from '../models/task.model';
 import * as TaskAction from '../actions/task.action';
-import { TaskState } from '../reducers/task.reducer';
+import { AppState, reducers, selectAllTasks, taskCounter } from '../app.state';
 
 @Component({
   selector: 'app-readtasks',
@@ -12,16 +12,14 @@ import { TaskState } from '../reducers/task.reducer';
 })
 export class ReadtasksComponent implements OnInit {
   tasks$: Observable<Task[]>;
-  constructor(private store: Store<{ tasks: TaskState }>) {
-    this.tasks$ = this.store.select('tasks', 'taskList');
+  counter$: Observable<number>;
+  constructor(private store: Store<AppState>) {
+    this.tasks$ = this.store.select(selectAllTasks);
+    this.counter$ = this.store.select(taskCounter);
   }
 
   deleteTask(index: number) {
-    this.store.dispatch(
-      TaskAction.removeTask({
-        taskIndex: index,
-      })
-    );
+    this.store.dispatch(TaskAction.removeTask({ taskIndex: index }));
   }
 
   checkTask(index: number, task: Task) {
