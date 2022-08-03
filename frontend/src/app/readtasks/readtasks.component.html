@@ -1,14 +1,13 @@
 <div>
 
     <h3>Tutorials</h3>
-    <ul>
-      <li  *ngFor="let task of tasks$ | async; let i = index">
-        <button (click)="checkTask(i, task)">Check Task</button>
-        <p>{{task.name}}</p>
-        <p>{{task.isDone}}</p>
-        <button (click)="deleteTask(i)">Delete Task</button>
-      </li>
-    </ul>
-    
+    <table *ngFor="let task of tasks$ | async; let i = index">
+      <tr>
+        <td><img src= "{{getImgPath(task.isDone)}}" (click)="checkTask(i, task)"></td>
+        <td>{{task.name}}</td>
+        <td>{{task.isDone}}</td>
+        <td><button (click)="deleteTask(i)">Delete Task</button></td>
+      </tr>
+    </table>
     <p>tasks left: {{ counter$ | async}}</p>
 </div>
