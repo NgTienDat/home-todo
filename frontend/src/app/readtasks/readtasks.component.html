@@ -3,9 +3,9 @@
     <table *ngFor="let task of tasks$ | async; let i = index">
       <tr>
         <td><img src= "{{getImgPath(task.isDone)}}" (click)="checkTask(i, task)"></td>
-        <td>{{task.name}}</td>
+        <td>{{task.description}}</td>
         <td>{{task.isDone}}</td>
-        <td><button (click)="deleteTask(i)">Delete Task</button></td>
+        <td><button (click)="deleteTask(i, task)">Delete Task</button></td>
       </tr>
     </table>
     <p>tasks left: {{ counter$ | async}}</p>
