@@ -18,6 +18,12 @@ export class ReadtasksComponent implements OnInit {
     this.counter$ = this.store.select(taskCounter);
   }
 
+  getImgPath(isDone: boolean): string {
+    return isDone
+      ? '../../assets/images/checkbox.png'
+      : '../../assets/images/empty-checkbox.png';
+  }
+
   deleteTask(index: number) {
     this.store.dispatch(TaskAction.removeTask({ taskIndex: index }));
   }
