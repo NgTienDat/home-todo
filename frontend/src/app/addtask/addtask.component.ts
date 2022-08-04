@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as TaskAction from '../actions/task.action';
+import { ApiService } from '../services/apiService/api.service';
 
 @Component({
   selector: 'app-addtask',
@@ -8,10 +9,18 @@ import * as TaskAction from '../actions/task.action';
   styleUrls: ['./addtask.component.scss'],
 })
 export class AddtaskComponent implements OnInit {
-  constructor(private store: Store) {}
+  constructor(private store: Store, private service: ApiService) {}
 
   addTask(name: string) {
-    this.store.dispatch(TaskAction.addTask({ name: name }));
+    this.service.addTask(name).subscribe((data) => {
+      this.store.dispatch(
+        TaskAction.addTask({
+          id: data.id,
+          name: data.description,
+          isDone: data.isDone,
+        })
+      );
+    });
   }
 
   ngOnInit(): void {}

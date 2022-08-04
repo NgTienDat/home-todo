@@ -8,11 +8,13 @@ import { ReadtasksComponent } from './readtasks/readtasks.component';
 import { AddtaskComponent } from './addtask/addtask.component';
 import { reducers } from './app.state';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { HttpClientModule } from '@angular/common/http';
 @NgModule({
   declarations: [AppComponent, ReadtasksComponent, AddtaskComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
+    HttpClientModule,
     StoreModule.forRoot(reducers),
     StoreDevtoolsModule.instrument({
       maxAge: 25,

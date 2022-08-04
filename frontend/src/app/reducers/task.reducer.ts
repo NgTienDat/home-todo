@@ -11,9 +11,19 @@ export const initialState: TaskState = {
 
 export const taskReducer = createReducer(
   initialState,
+  on(TaskAction.getAllTasks, (state, action) => {
+    return {
+      taskList: getTasks(state.taskList, action.tasks),
+    };
+  }),
   on(TaskAction.addTask, (state, action) => {
     return {
-      taskList: createTask(state.taskList, action.name),
+      taskList: createTask(
+        state.taskList,
+        action.id,
+        action.name,
+        action.isDone
+      ),
     };
   }),
   on(TaskAction.removeTask, (state, action) => {
@@ -33,13 +43,25 @@ export const taskReducer = createReducer(
   })
 );
 
-const createTask = (taskList: Task[], name: string) => {
+const createTask = (
+  taskList: Task[],
+  id: number,
+  name: string,
+  isDone: boolean
+) => {
   let newTask: Task = {
-    name: name,
-    isDone: false,
+    id: id,
+    description: name,
+    isDone: isDone,
   };
   return [...taskList, newTask];
 };
+
+const getTasks = (taskList: Task[], tasks: Task[]) => {
+  let newTaskList = [...tasks];
+  return newTaskList;
+};
+
 const removeTask = (taskList: Task[], index: number) => {
   let newTaskList = [...taskList];
   newTaskList.splice(index, 1);
