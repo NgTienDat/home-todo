@@ -1,9 +1,10 @@
 import { DbService } from "../services/db.service.js";
+import { CookieService } from "../services/cookie.service.js";
 import jwt from "jsonwebtoken";
 
 const addTask = async (req, res) => {
 	let description = req.body.description;
-	let userId = req.body.userId;
+	let userId = CookieService.getUserIdFromToken(req);
 	if (description && Number(userId)) {
 		DbService.addTaskToDb(userId, description).then(async (id) => {
 			const task = await DbService.getTaskFromDb(id);
@@ -26,7 +27,7 @@ const removeTask = async (req, res) => {
 };
 
 const getTasks = async (req, res) => {
-	const userId = req.body.id; // will be from token
+	const userId = CookieService.getUserIdFromToken(req); // will be from token
 	if (Number(userId)) {
 		const data = await DbService.getAllTasksFromDb(userId);
 		res.status(200).json(data);
