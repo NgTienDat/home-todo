@@ -1,64 +1,98 @@
-import { callbackify } from "util";
 import { dataSource } from "../configs/dbconfig.js";
+import bcrypt from "bcryptjs";
 
 export class DbService {
-	static async addTaskToDb(userId, description, callback) {
+	static async addTaskToDb(userId, description) {
 		var sql =
 			"INSERT INTO tasks(description, userId) VALUES ('" +
 			description +
 			"', '" +
 			userId +
 			"')";
-		dataSource.query(sql, function (err, result) {
-			if (err) throw err;
-			return callback(result.insertId);
+		return new Promise((resolve, reject) => {
+			dataSource.query(sql, (err, result) => {
+				if (err) reject(err);
+				else {
+					resolve(result.insertId);
+				}
+			});
 		});
 	}
 
 	static async removeTaskFromDb(id) {
 		var sql = "DELETE FROM tasks WHERE id='" + id + "'";
-		dataSource.query(sql, function (err) {
-			if (err) throw err;
+		return new Promise((resolve, reject) => {
+			dataSource.query(sql, (err) => {
+				if (err) reject(err);
+			});
 		});
 	}
 
-	static async getTaskFromDb(taskId, callback) {
+	static async getTaskFromDb(taskId) {
 		var sql =
 			"SELECT id, description, isDone FROM tasks WHERE id='" + taskId + "'";
-		dataSource.query(sql, function (err, result) {
-			if (err) throw err;
-			return callback(result[0]);
+		return new Promise((resolve, reject) => {
+			dataSource.query(sql, (err, result) => {
+				if (err) reject(err);
+				else {
+					resolve(result[0]);
+				}
+			});
 		});
 	}
 
-	static async getAllTasksFromDb(userId, callback) {
-		var sql =
+	static async getAllTasksFromDb(userId) {
+		const sql =
 			"SELECT id, description, isDone FROM tasks WHERE userId='" +
 			userId +
 			"' ";
-		dataSource.query(sql, function (err, result) {
-			if (err) throw err;
-			return callback(result);
+		return new Promise((resolve, reject) => {
+			dataSource.query(sql, (err, result) => {
+				if (err) {
+					reject(err);
+				} else {
+					resolve(result);
+				}
+			});
 		});
 	}
 
 	static async addUserToDb(username, password) {
+		let salt = await bcrypt.genSalt();
+		let hashPassword = await bcrypt.hash(password.toString(), salt);
 		var sql =
 			"INSERT INTO users(username, password) VALUES('" +
 			username +
 			"', '" +
-			password +
+			hashPassword +
 			"')";
-		dataSource.query(sql, function (err) {
-			if (err) throw err;
+		return new Promise((resolve, reject) => {
+			dataSource.query(sql, (err, result) => {
+				if (err) reject(err);
+				else {
+					resolve(result.insertId);
+				}
+			});
 		});
 	}
 
-	static async isUserInDb(username, callback) {
+	static async isUserInDb(username, password) {
 		var sql = "SELECT password FROM users WHERE username='" + username + "' ";
-		dataSource.query(sql, function (err, result) {
-			if (err) throw err;
-			return callback(result);
+		return new Promise((resolve, reject) => {
+			dataSource.query(sql, async (err, result) => {
+				if (err) reject(err);
+				else {
+					if (result.length == 1) {
+						let condition = await bcrypt.compare(
+							password.toString(),
+							result[0].password
+						);
+						resolve(condition);
+					} else {
+						resolve(false);
+					}
+				}
+			});
 		});
 	}
 }
