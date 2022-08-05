@@ -1,5 +1,5 @@
 import { DbService } from "../services/db.service.js";
-import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 
 const addTask = async (req, res) => {
 	let description = req.body.description;
@@ -39,23 +39,39 @@ const registerUser = async (req, res) => {
 	let username = req.body.username;
 	let password = req.body.password;
 	if (username && password) {
-		DbService.addUserToDb(username, password).then((data) => {
-			//todo return userID so send a token and log him in
-			console.log(data);
-			res.status(200).json({ message: "user added!" });
-		});
+		if (await DbService.isDuplicit(username)) {
+			res.status(400).json({ message: "user already exists!" });
+		} else {
+			DbService.addUserToDb(username, password).then(() => {
+				res.status(200).json({ message: "user added!" });
+			});
+		}
 	} else {
 		res.status(400).json({ error: "Bad input!" });
 	}
 };
 
 const loginUser = async (req, res) => {
+	let secret = "very-secret-key";
 	let username = req.body.username;
 	let password = req.body.password;
 	if (username && password) {
 		if (await DbService.isUserInDb(username, password)) {
-			res.status(200).json({ message: "ok" });
-			//will send token here
+			//send token
+			let user = await DbService.getUserFromDb(username);
+			const payload = {
+				id: user.id,
+				username: user.username,
+			};
+			const token = jwt.sign(payload, secret);
+			res
+				.cookie("authentication_token", token, {
+					httpOnly: true,
+					sameSite: "none",
+					secure: true,
+				})
+				.status(200)
+				.json({ message: "ok" });
 		} else {
 			res.status(400).json({ error: "invalid username or password" });
 		}

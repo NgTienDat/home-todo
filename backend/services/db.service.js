@@ -67,10 +67,23 @@ export class DbService {
 			hashPassword +
 			"')";
 		return new Promise((resolve, reject) => {
+			dataSource.query(sql, (err) => {
+				if (err) reject(err);
+			});
+		});
+	}
+
+	static async isDuplicit(username) {
+		var sql = "SELECT password FROM users WHERE username='" + username + "' ";
+		return new Promise((resolve, reject) => {
 			dataSource.query(sql, (err, result) => {
 				if (err) reject(err);
 				else {
-					resolve(result.insertId);
+					if (result.length == 1) {
+						resolve(true);
+					} else {
+						resolve(false);
+					}
 				}
 			});
 		});
@@ -83,14 +96,27 @@ export class DbService {
 				if (err) reject(err);
 				else {
 					if (result.length == 1) {
-						let condition = await bcrypt.compare(
+						let isCorrectPassword = await bcrypt.compare(
 							password.toString(),
 							result[0].password
 						);
-						resolve(condition);
+						resolve(isCorrectPassword);
 					} else {
 						resolve(false);
 					}
+				}
+			});
+		});
+	}
+
+	static async getUserFromDb(username) {
+		var sql =
+			"SELECT id, username FROM users WHERE username='" + username + "'";
+		return new Promise((resolve, reject) => {
+			dataSource.query(sql, (err, result) => {
+				if (err) reject(err);
+				else {
+					resolve(result[0]);
 				}
 			});
 		});

@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
-import { Task } from '../models/task.model';
-import * as TaskAction from '../actions/task.action';
-import { AppState, selectAllTasks, taskCounter } from '../app.state';
-import { ApiService } from '../services/apiService/api.service';
+import { Task } from '../../models/task.model';
+import * as TaskAction from '../../actions/task.action';
+import { AppState, selectAllTasks, taskCounter } from '../../app.state';
+import { ApiService } from '../../services/apiService/api.service';
 
 @Component({
   selector: 'app-readtasks',
