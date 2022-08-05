@@ -1,1 +1,17 @@
-<p>register works!</p>
+<div class="register">
+    <h1>Register</h1>
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" >
+
+        <label for="user-name">Username: </label>
+        <input id="user-name" type="text" formControlName="username" required>
+      
+        <label for="password">Password: </label>
+        <input id="password" type="password" formControlName="password" required>
+
+        <label for="password2">Password again: </label>
+        <input id="password2" type="password" formControlName="password2" required>
+        
+        <button type="submit">SIGN UP</button>
+        <p>Already have an <a routerLink="/login">acount</a>?</p>
+    </form>
+</div>

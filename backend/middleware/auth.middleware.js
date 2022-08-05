@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import { CookieService } from "../services/CookieService";
+import { CookieService } from "../services/cookie.service.js";
 
 export const authenticationMiddleware = (req, res, next) => {
 	const exceptions = ["/api/register", "/api/login"];
@@ -13,7 +13,7 @@ export const authenticationMiddleware = (req, res, next) => {
 				message: "No token provided!",
 			});
 		}
-		jwt.verify(token, secret, (err, decoded) => {
+		jwt.verify(token, secret, (err) => {
 			if (err) {
 				return res.status(401).send({
 					message: "Unauthorized access!",

@@ -8,11 +8,13 @@ import { ReadtasksComponent } from './components/readtasks/readtasks.component';
 import { AddtaskComponent } from './components/addtask/addtask.component';
 import { reducers } from './app.state';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { TodoAppComponent } from './components/todo-app/todo-app.component';
 import { HomeComponent } from './components/home/home.component';
 import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
+import { ReactiveFormsModule } from '@angular/forms';
+import { TokenInterceptor } from './services/interceptor/token.interceptor';
 @NgModule({
   declarations: [
     AppComponent,
@@ -25,6 +27,7 @@ import { RegisterComponent } from './components/register/register.component';
   ],
   imports: [
     BrowserModule,
+    ReactiveFormsModule,
     AppRoutingModule,
     HttpClientModule,
     StoreModule.forRoot(reducers),
@@ -32,7 +35,13 @@ import { RegisterComponent } from './components/register/register.component';
       maxAge: 25,
     }),
   ],
-  providers: [],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: TokenInterceptor,
+      multi: true,
+    },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

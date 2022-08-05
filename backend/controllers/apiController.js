@@ -27,12 +27,25 @@ const removeTask = async (req, res) => {
 };
 
 const getTasks = async (req, res) => {
-	const userId = CookieService.getUserIdFromToken(req); // will be from token
+	const userId = CookieService.getUserIdFromToken(req);
 	if (Number(userId)) {
 		const data = await DbService.getAllTasksFromDb(userId);
 		res.status(200).json(data);
 	} else {
 		res.status(400).json({ error: "Bad input!" });
+	}
+};
+
+const checkTask = async (req, res) => {
+	let userId = CookieService.getUserIdFromToken(req);
+	let taskId = req.body.id;
+	let isDone = req.body.isDone;
+	if (userId && taskId && isDone != undefined) {
+		DbService.checkTask(taskId, isDone, userId).then((message) => {
+			res.status(200).json(message);
+		});
+	} else {
+		res.status(400).json({ message: "bad input!" });
 	}
 };
 
@@ -43,8 +56,8 @@ const registerUser = async (req, res) => {
 		if (await DbService.isDuplicit(username)) {
 			res.status(400).json({ message: "user already exists!" });
 		} else {
-			DbService.addUserToDb(username, password).then(() => {
-				res.status(200).json({ message: "user added!" });
+			DbService.addUserToDb(username, password).then((message) => {
+				res.status(201).json(message);
 			});
 		}
 	} else {
@@ -81,4 +94,11 @@ const loginUser = async (req, res) => {
 	}
 };
 
-export default { addTask, getTasks, registerUser, loginUser, removeTask };
+export default {
+	addTask,
+	getTasks,
+	registerUser,
+	loginUser,
+	removeTask,
+	checkTask,
+};

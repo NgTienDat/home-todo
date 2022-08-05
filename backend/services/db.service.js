@@ -57,6 +57,26 @@ export class DbService {
 		});
 	}
 
+	static async checkTask(taskId, isDone, userId) {
+		const sql =
+			"UPDATE tasks SET isDone='" +
+			Number(!isDone) +
+			"' WHERE id='" +
+			taskId +
+			"' and userId='" +
+			userId +
+			"' ";
+		return new Promise((resolve, reject) => {
+			dataSource.query(sql, (err) => {
+				if (err) {
+					reject(err);
+				} else {
+					resolve({ message: "task update!" });
+				}
+			});
+		});
+	}
+
 	static async addUserToDb(username, password) {
 		let salt = await bcrypt.genSalt();
 		let hashPassword = await bcrypt.hash(password.toString(), salt);
@@ -69,6 +89,9 @@ export class DbService {
 		return new Promise((resolve, reject) => {
 			dataSource.query(sql, (err) => {
 				if (err) reject(err);
+				else {
+					resolve({ message: "user added!" });
+				}
 			});
 		});
 	}

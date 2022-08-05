@@ -31,11 +31,12 @@ export class ReadtasksComponent implements OnInit {
   }
 
   checkTask(index: number, task: Task) {
+    this.service.checkTask(task.id, task.isDone).subscribe();
     this.store.dispatch(TaskAction.checkTask({ taskIndex: index, task: task }));
   }
 
   ngOnInit(): void {
-    this.service.getAllTasks(9).subscribe((tasks) => {
+    this.service.getAllTasks().subscribe((tasks) => {
       if (tasks) {
         this.store.dispatch(TaskAction.getAllTasks({ tasks: tasks }));
       } else {
